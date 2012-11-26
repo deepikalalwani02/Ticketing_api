@@ -167,11 +167,9 @@ describe "Get /tickets/" do
 				tickets["ticket_data"]["status"].should_not 					== nil
 				tickets["ticket_data"]["dateOfIssue"].should_not 				== nil
 				tickets["ticket_data"]["busType"].should_not 					== nil
-				tickets["ticket_data"]["refundAmount"].should 					== nil
-				tickets["ticket_data"]["cancellationCharges"].should 			== nil
-				tickets["ticket_data"]["dateOfCancellation"].should 			== nil
+				# tickets["ticket_data"]["refundAmount"].should 					== niL
 				# tickets["partialCancellationAllowed"].should_not 		 		== nil
-				# tickets["ticket_data"]["cancellationCharges"].should_not 		== nil
+				# tickets["cancellationCharges"].should_not 						== nil
 				# tickets["ticket_data"]["dateOfCancellation"].should_not  		== nil
 			end
 
@@ -179,35 +177,3 @@ describe "Get /tickets/" do
 	end
 end
 
-
-# tickets["input_params"].is_a? (Array)
-				# if true then 
-				# 		puts "input_params is an array" 
-				# 	else 
-				# 		puts "input_params is not an array"
-				# 	end
-
-
-
-# tickets["input_params"]["selectedSeats"].is_a? (Array)
-# 				if true then 
-# 						puts selected seats is an array" 
-# 					else 
-# 						puts selected seats is not an array"
-# 					end
-
-
-# tickets["input_params"]["passengers"].is_a? (Array)
-# 				if true then 
-# 						puts "passengers is an array" 
-# 					else 
-# 						puts "passengers is not an array"
-# 					end
-
-
-# tickets["ticket_data"].is_a? (Array)
-# 				if true then 
-# 						puts "ticket data is an array" 
-# 					else 
-# 						puts "ticket data is not an array"
-# 					end
