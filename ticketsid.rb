@@ -57,6 +57,7 @@ describe "Get /tickets/:id" do
 					ticket_data["ticket_data"].should 									== nil
 					ticket_data["provider_ticket_id"].should 							== nil
 					ticket_data["cancellation_charge"].should 							== nil
+					ticket_data["trip_id"].should 										== nil
 
 					else if ticket_data["status"] 											== "SOLD"
 						puts "TICKET IS SOLD"
@@ -113,6 +114,7 @@ describe "Get /tickets/:id" do
 						ticket_data["input_params"]["controller"].should_not 				== nil
 						ticket_data["input_params"]["action"].should_not 					== nil
 						ticket_data["input_params"]["ticket"].should_not 					== nil
+						ticket_data["trip_id"].should_not									== nil
 
 						else if ticket_data["status"] 										== "CANCELLED"
 						puts "TICKET IS CANCELLED"
@@ -120,6 +122,7 @@ describe "Get /tickets/:id" do
 						ticket_data["provider_ticket_id"].should_not 						== nil
 						ticket_data["cancellation_charge"].should_not 						== nil
 						ticket_data["uid"].should_not 										== nil
+						ticket_data["trip_id"].should 										== nil
 					end
 				end
 			end

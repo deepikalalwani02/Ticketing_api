@@ -26,12 +26,16 @@ describe "GET /Cities" do
 	    end
 	end	
 
-    it "should be true" do
+    it "Test case for unique short name " do
 	    RestClient.get(url) do |response, request, result, &block|
 	    	city_list = JSON.parse(response)
-	    	puts city_list[0]["id"]
-	    	id = city_list.map(&:id)
-			id.uniq.length == id.length
+	    	if short_name = city_list.collect {|c| c["short_name"]}
+				short_name.uniq.length == short_name.length
+				puts " SHORT NAME IS UNIQUE"
+			else
+				puts "SHORT NAME IS NOT UNIQUE"
+			end
+			
 			city_list.each do |city|
 				city["id"].should_not < 0
 				if city["id"] == 1

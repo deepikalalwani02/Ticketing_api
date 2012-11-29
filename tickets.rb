@@ -4,7 +4,7 @@ require 'rest_client'
 require 'rspec'
 require 'oauth2'
 
-url = "http://tickets-staging.paytm.com/tickets"
+url = "http://tickets.paytm.com/tickets"
 
 describe "Get /tickets/" do
 
@@ -15,9 +15,9 @@ describe "Get /tickets/" do
 		end
 	end
 
-	it "should return 200 authorized" do
-		response = RestClient::Resource.new("http://tickets-staging.paytm.com/admin/index", "one97-admin", "@neNine7").get
-		response = RestClient.get("http://tickets-staging.paytm.com/tickets", :Cookie => response.headers[:set_cookie][0])
+	it "should return 200 authorized and output should be an array" do
+		response = RestClient::Resource.new("http://tickets.paytm.com/admin/index", "one97-admin", "@neNine7").get
+		response = RestClient.get("http://tickets.paytm.com/tickets", :Cookie => response.headers[:set_cookie][0])
 		puts response
 		response.code.should == 200
 		response.length.should >0
@@ -28,7 +28,43 @@ describe "Get /tickets/" do
 			else 
 				puts "Output is not an array"
 			end
-			tickets_array.each do |tickets|
+			
+	end
+
+	it "Test case for BLOCKED tickets" do
+		response = RestClient::Resource.new("http://tickets.paytm.com/admin/index", "one97-admin", "@neNine7").get
+		response = RestClient.get("http://tickets.paytm.com/tickets", :Cookie => response.headers[:set_cookie][0])
+		tickets_array = JSON.parse(response)
+		tickets_array.each do |tickets|
+			if tickets["status"] 							== "BLOCKED"
+				tickets["ticket_data"].should 				== nil
+				tickets["provider_ticket_id"].should 		== nil
+				tickets["cancellation_charge"].should 		== nil
+				ticket_data["trip_id"].should 				== nil
+			end
+		end
+	end
+
+	it "Test case for SOLD tickets" do
+		response = RestClient::Resource.new("http://tickets.paytm.com/admin/index", "one97-admin", "@neNine7").get
+		response = RestClient.get("http://tickets.paytm.com/tickets", :Cookie => response.headers[:set_cookie][0])
+		tickets_array = JSON.parse(response)
+		tickets_array.each do |tickets|
+			if tickets["status"] == "SOLD"
+					# tickets["ticket_data"]["inventoryItems"].each do |detail|
+					# 	detail["seatName"].should_not							== nil
+					# 	detail["fare"].should_not								== nil
+					# 	detail["ladiesSeat"].should_not							== nil
+					# 	detail["passenger"].should_not							== nil
+					# 	detail["passenger"]["name"].should_not 					== nil
+					# 	detail["passenger"]["mobile"].should_not 				== nil
+					# 	detail["passenger"]["title"].should_not 				== nil
+					# 	detail["passenger"]["email"].should_not 				== nil	
+					# 	detail["passenger"]["age"].should_not 					== nil
+					# 	detail["passenger"]["gender"].should_not 				== nil
+					# 	detail["passenger"]["idType"].should_not 				== nil
+					# 	detail["passenger"]["Primary"].should_not 				== nil
+				# 	# end
 				tickets["block_key"].should_not 								== nil
 				tickets["created_at"].should_not 								== nil
 				tickets["destination_city_id"].should_not 						== nil
@@ -41,7 +77,7 @@ describe "Get /tickets/" do
 				tickets["status"].should_not 									== nil
 				tickets["transaction_id"].should_not 							== nil
 				tickets["travel_date"].should_not 								== nil
-				# tickets["trip_id"].should_not 								== nil
+				tickets["trip_id"].should_not 								== nil
 				tickets["updated_at"].should_not 								== nil
 				tickets["user_id"].should_not 									== nil
 				tickets["input_params"]["providerId"].should_not 				== nil
@@ -75,51 +111,13 @@ describe "Get /tickets/" do
 				tickets["input_params"]["controller"].should_not 				== nil
 				tickets["input_params"]["action"].should_not 					== nil
 				tickets["input_params"]["ticket"].should_not 					== nil
-			end
-	end
-
-	it "Test case for BLOCKED tickets" do
-		response = RestClient::Resource.new("http://tickets-staging.paytm.com/admin/index", "one97-admin", "@neNine7").get
-		response = RestClient.get("http://tickets-staging.paytm.com/tickets", :Cookie => response.headers[:set_cookie][0])
-		tickets_array = JSON.parse(response)
-		tickets_array.each do |tickets|
-			if tickets["status"] 							== "BLOCKED"
-				tickets["ticket_data"].should 				== nil
-				tickets["provider_ticket_id"].should 		== nil
-				tickets["cancellation_charge"].should 		== nil
-			end
-		end
-	end
-
-	it "Test case for SOLD tickets" do
-		response = RestClient::Resource.new("http://tickets-staging.paytm.com/admin/index", "one97-admin", "@neNine7").get
-		response = RestClient.get("http://tickets-staging.paytm.com/tickets", :Cookie => response.headers[:set_cookie][0])
-		tickets_array = JSON.parse(response)
-		tickets_array.each do |tickets|
-			if tickets["status"] == "SOLD"
 				tickets["ticket_data"].should_not 								== nil
 				tickets["provider_ticket_id"].should_not 						== nil
 				tickets["cancellation_charge"].should 							== nil
-				tickets["input_params"]["bankCode"].should_not 					== nil
+				# tickets["input_params"]["bankCode"].should_not 					== nil
 				tickets["ticket_data"]["tin"].should_not 						== nil
 				tickets["ticket_data"]["pnr"].should_not			    		== nil
 				tickets["ticket_data"]["inventoryItems"].should_not 			== nil
-					tickets["ticket_data"]["inventoryItems"].each do |detail|
-						detail["seatName"].should_not							== nil
-						detail["fare"].should_not								== nil
-						detail["ladiesSeat"].should_not							== nil
-						detail["passenger"].should_not							== nil
-						detail["passenger"]["name"].should_not 					== nil
-						# detail["passenger"]["mobile"].should_not 				== nil
-						detail["passenger"]["title"].should_not 				== nil
-						# detail["passenger"]["email"].should_not 				== nil	
-						detail["passenger"]["age"].should_not 					== nil
-						detail["passenger"]["gender"].should_not 				== nil
-						detail["passenger"]["idType"].should_not 				== nil
-						# detail["passenger"]["Primary"].should_not 				== nil
-					end
-
-				tickets["ticket_data"]["inventoryId"].should_not 				== nil
 				tickets["ticket_data"]["doj"].should_not 						== nil
 				tickets["ticket_data"]["sourceCityId"].should_not 				== nil
 				tickets["ticket_data"]["pickupLocationId"].should_not 			== nil
@@ -141,15 +139,14 @@ describe "Get /tickets/" do
 	end
 
 	it "Test case for CANCELLED tickets" do
-		response = RestClient::Resource.new("http://tickets-staging.paytm.com/admin/index", "one97-admin", "@neNine7").get
-		response = RestClient.get("http://tickets-staging.paytm.com/tickets", :Cookie => response.headers[:set_cookie][0])
+		response = RestClient::Resource.new("http://tickets.paytm.com/admin/index", "one97-admin", "@neNine7").get
+		response = RestClient.get("http://tickets.paytm.com/tickets", :Cookie => response.headers[:set_cookie][0])
 		tickets_array = JSON.parse(response)
 		tickets_array.each do |tickets|
 			if tickets["status"] 										 		== "CANCELLED"
 				tickets["provider_ticket_id"].should_not 				 		== nil
 				tickets["ticket_data"].should_not 						 		== nil
-				tickets["input_params"]["bankCode"].should_not 			 		== nil
-				tickets["input_params"]["bankCode"].should_not 					== nil
+				# tickets["input_params"]["bankCode"].should_not 					== nil
 				tickets["ticket_data"]["tin"].should_not 						== nil
 				tickets["ticket_data"]["pnr"].should_not			    		== nil
 				tickets["ticket_data"]["inventoryItems"].should_not 			== nil
@@ -167,10 +164,12 @@ describe "Get /tickets/" do
 				tickets["ticket_data"]["status"].should_not 					== nil
 				tickets["ticket_data"]["dateOfIssue"].should_not 				== nil
 				tickets["ticket_data"]["busType"].should_not 					== nil
+				tickets["cancellation_charge"].should_not 						== nil
+				ticket_data["trip_id"].should 									== nil
 				# tickets["ticket_data"]["refundAmount"].should 					== niL
 				# tickets["partialCancellationAllowed"].should_not 		 		== nil
-				# tickets["cancellationCharges"].should_not 						== nil
 				# tickets["ticket_data"]["dateOfCancellation"].should_not  		== nil
+				# tickets["ticket_data"]["cancellationCharges"].should_not  		== nil
 			end
 
 		end

@@ -44,7 +44,7 @@ describe "Get /banks" do
 		end
 	end
 
-	it "Single id should not contain details of two banks" do
+	it "should return 200 authorised" do
 		RestClient.get(url) do |response, request, result, &block|
 			response.code.should == 200
 			list = JSON.parse(response)
@@ -63,14 +63,6 @@ describe "Get /banks" do
 				type["id"].should_not 			  == nil
 				type["name"].should_not			  == nil
 				type["short_name"].should_not     == nil
-				if  type["id"] 					  == 39
-					type["name"].should 		  == "Royal Bank of Scotland"
-					type["short_name"].should 	  == "royal_bank_of_scotland"
-				end
-				if  type["id"] 					  == 39
-					type["name"].should_not 	  == "State Bank of Travancore"
-					type["short_name"].should_not == "state_bank_of_travancore"
-				end
 			end
 		end
 	end
